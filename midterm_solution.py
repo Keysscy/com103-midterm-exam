@@ -1,21 +1,4 @@
-# Expense Tracker - Beginner Version
 
-print("WELCOME TO EXPENSE TRACKER")
-print("----------------------------")
-
-# Get student name
-name = input("Enter your name: ")
-
-# Get valid budget (must be numeric)
-while True:
-    budget_input = input("Enter your weekly budget: ")
-    try:
-        budget = float(budget_input)
-        break
-    except:
-        print("Invalid input, please enter a proper number.")
-
-# Expense categories
 categories = [
     "Food & Drinks",
     "Transportation",
@@ -24,110 +7,149 @@ categories = [
     "Entertainment"
 ]
 
-print("")
 print("==========================================")
-print("WEEKLY EXPENSE -- CATEGORIES")
+print("WELCOME TO WEEKLY EXPENSE TRACKER")
 print("==========================================")
 
-i = 0
-while i < 5:
-    print(i + 1, ".", categories[i])
-    i = i + 1
 
-print("==========================================")
-print("")
+name = input("Enter your name: ")
 
-# storage for expenses
-exp_category = []
-exp_description = []
-exp_amount = []
-exp_flag = []
 
-total_spent = 0
+while True:
+    budget_input = input("Enter your weekly budget: ")
 
-count = 1
+    valid = True
 
-# loop for 4 expenses
-while count <= 4:
-    print("--- EXPENSE", count, "---")
-
-    cat_input = input("Category (0 to skip): ")
-
-    try:
-        cat = int(cat_input)
-    except:
-        print("Invalid category input, skipped.")
-        cat = 0
-
-    if cat == 0:
-        print("")
-        count = count + 1
-        continue
-
-    if cat < 1 or cat > 5:
-        print("Invalid category number, skipped.")
-        print("")
-        count = count + 1
-        continue
-
-    desc = input("Description: ")
-    amt_input = input("Amount: ")
-
-    try:
-        amt = float(amt_input)
-    except:
-        print("Invalid amount, skipped.")
-        print("")
-        count = count + 1
-        continue
-
-    exp_category.append(cat)
-    exp_description.append(desc)
-    exp_amount.append(amt)
-
-    limit = budget * 0.25
-
-    if amt > limit:
-        exp_flag.append("! High Expense Alert!")
+    if budget_input == "":
+        valid = False
     else:
-        exp_flag.append("")
+        for ch in budget_input:
+            if ch < "0" or ch > "9":
+                valid = False
 
-    total_spent = total_spent + amt
+    if valid == True:
+        budget = int(budget_input)
+        break
+    else:
+        print("Invalid input, please enter a proper number")
+
+
+print("")
+print("==========================================")
+print("EXPENSE CATEGORIES")
+print("==========================================")
+
+for i in range(5):
+    print(str(i + 1) + ". " + categories[i])
+
+print("==========================================")
+
+
+expenses = []
+expense_count = 0
+
+
+threshold = budget * 25 / 100
+
+
+for i in range(4):
 
     print("")
-    count = count + 1
+    print("--- EXPENSE " + str(i + 1) + " ---")
 
-# remaining balance
-remaining = budget - total_spent
+    category_input = input("Category (0 to skip): ")
 
-# status
-if remaining >= 0:
-    status = "Budget OK! Keep it up."
-else:
-    status = "Overspent! Reduce spending."
+    valid_cat = True
 
-# OUTPUT REPORT
+    if category_input == "":
+        valid_cat = False
+    else:
+        for ch in category_input:
+            if ch < "0" or ch > "9":
+                valid_cat = False
+
+    if valid_cat == True:
+        category = int(category_input)
+    else:
+        category = -1
+
+    if category == 0:
+        print("Skipped expense slot")
+    else:
+        if category >= 1 and category <= 5:
+
+            description = input("Description: ")
+
+            while True:
+                amount_input = input("Amount: ")
+
+                valid_amount = True
+
+                if amount_input == "":
+                    valid_amount = False
+                else:
+                    for ch in amount_input:
+                        if ch < "0" or ch > "9":
+                            valid_amount = False
+
+                if valid_amount == True:
+                    amount = int(amount_input)
+                    break
+                else:
+                    print("Invalid input, please enter a proper number")
+
+            flag = ""
+
+            if amount > threshold:
+                flag = "! High Expense Alert!"
+
+            expense = [category, description, amount, flag]
+            expenses.append(expense)
+
+            expense_count = expense_count + 1
+
+        else:
+            print("Invalid category, skipped")
+
+
 print("")
 print("======================================================")
-print(name, "-- WEEKLY EXPENSE LOG")
+print(name.upper() + " -- WEEKLY EXPENSE LOG")
 print("======================================================")
 
-print("Weekly Budget : P", budget)
+print("Weekly Budget : P" + str(budget))
 
-i = 0
-while i < 4:
-    if i < len(exp_category):
-        print("[", i + 1, "] ", categories[exp_category[i] - 1], sep="")
-        print("     ", exp_description[i])
-        print("     P", exp_amount[i])
+total = 0
+count = 0
 
-        if exp_flag[i] != "":
-            print("     ", exp_flag[i])
+for item in expenses:
+    count = count + 1
 
-    i = i + 1
+    cat_num = item[0]
+    desc = item[1]
+    amt = item[2]
+    tag = item[3]
 
+    print("")
+    print("[" + str(count) + "] " + categories[cat_num - 1])
+    print(desc)
+    print("P" + str(amt))
+
+    if tag != "":
+        print(tag)
+
+    total = total + amt
+
+remaining = budget - total
+
+print("")
 print("------------------------------------------------------")
-print("Total Spent : P", total_spent)
-print("Remaining   : P", remaining)
-print("Status      : ", status)
+print("Total Spent : P" + str(total))
+print("Remaining : P" + str(remaining))
+
+if remaining >= 0:
+    print("Status : Budget OK! Keep it up.")
+else:
+    print("Status : Overspent! Reduce spending.")
+
 print("======================================================")
