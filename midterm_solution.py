@@ -1,6 +1,11 @@
+
+# Expense Tracker Program
+
+# Step 1: Ask for name and budget
 name = input("Student name: ")
 budget = float(input("Weekly budget: "))
 
+# Categories
 categories = [
     "Food & Drinks",
     "Transportation",
@@ -9,40 +14,59 @@ categories = [
     "Entertainment"
 ]
 
+examples = [
+    "Lunch, snacks, coffee",
+    "Bus, jeepney, ride-share",
+    "Load, data plan, WiFi top-up",
+    "Notebook, pen, bond paper",
+    "Games, movies, hangout"
+]
+
 print("\n==========================================")
 print("   WEEKLY EXPENSE -- CATEGORIES")
 print("==========================================")
 
-for i in range(len(categories)):
-    print(" " + str(i+1) + ". " + categories[i])
+# Step 2: Display categories using loop
+i = 0
+while i < len(categories):
+    print(" " + str(i+1) + ". " + categories[i] + "       [e.g. " + examples[i] + "]")
+    i = i + 1
 
-print("==========================================\n")
+print("==========================================")
 
-expenses = []
+# Storage
+expense_list = []
 total_spent = 0
 
-for i in range(1, 5):
-    print("--- EXPENSE " + str(i) + " ---")
-    cat_num = int(input("Category (0 to skip): "))
+# Step 3: Accept 4 expense entries
+count = 1
+while count <= 4:
+    print("\n--- EXPENSE " + str(count) + " ---")
+    cat = int(input("Category (0 to skip): "))
 
-    if cat_num == 0:
+    if cat == 0:
+        count = count + 1
         continue
 
-    
-    if cat_num >= 1 and cat_num <= 5:
+    if cat >= 1 and cat <= 5:
         desc = input("Description: ")
         amount = float(input("Amount: "))
 
-        if amount > 0.25 * budget:
-            flag = "! High Expense Alert!"
-        else:
-            flag = ""
+        # Step 5: Check 25% rule
+        threshold = budget * 0.25
+        alert = ""
 
-        expenses.append([cat_num, desc, amount, flag])
+        if amount > threshold:
+            alert = "! High Expense Alert!"
+
+        # Save expense
+        expense_list.append([cat, desc, amount, alert])
+
         total_spent = total_spent + amount
 
-    print()
+    count = count + 1
 
+# Step 6: Compute totals
 remaining = budget - total_spent
 
 if remaining >= 0:
@@ -50,22 +74,26 @@ if remaining >= 0:
 else:
     status = "Overspent! Reduce spending."
 
+# Step 7: Print report
 print("\n======================================================")
 print("     " + name.upper() + " -- WEEKLY EXPENSE LOG")
 print("======================================================")
 
 print("  Weekly Budget  : P" + format(budget, ".2f"))
 
-count = 1
-for exp in expenses:
-    cat = categories[exp[0] - 1]
-    desc = exp[1]
-    amt = exp[2]
-    flag = exp[3]
+i = 0
+entry_num = 1
+while i < len(expense_list):
+    cat = expense_list[i][0]
+    desc = expense_list[i][1]
+    amount = expense_list[i][2]
+    alert = expense_list[i][3]
 
-    print("  [" + str(count) + "] " + cat)
-    print("      " + desc.ljust(30) + " P" + format(amt, ".2f") + " " + flag)
-    count = count + 1
+    print("  [" + str(entry_num) + "] " + categories[cat-1])
+    print("      " + desc + "              P" + format(amount, ".2f") + "  " + alert)
+
+    entry_num = entry_num + 1
+    i = i + 1
 
 print("------------------------------------------------------")
 print("  Total Spent    : P" + format(total_spent, ".2f"))
